@@ -13,11 +13,21 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "config": {
+        "usesNonExemptEncryption": true
+      },
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": ["location", "fetch"],
+        "CFBundleAllowMixedLocalizations": true,
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "App requires geolocation to improve the quality of the service",
+        "NSLocationAlwaysUsageDescription": "App requires geolocation to improve the quality of the service",
+        "NSLocationWhenInUseUsageDescription": "App requires geolocation to improve the quality of the service",
+        "NSCameraUsageDescription": "The picture will be used to inform the state of the packages during delivery"
+      }
     },
     "android": {
       "adaptiveIcon": {

@@ -14,29 +14,53 @@ TaskManager.defineTask("test", ({ data, error }) => {
 
 export default function App() {
   const [locationStarted, setLocationStarted] = useState(false);
+  const [bgPerm, setBgPerm] = useState(null);
+  const [fgPerm, setFgPerm] = useState(null);
   const [coords, setCoords] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
+      let fg = await Location.requestForegroundPermissionsAsync();
+      if (fg.status !== "granted") {
         setErrorMsg("Permission to access location was denied");
         return;
       }
-      let bg = await Location.requestBackgroundPermissionsAsync();
-      if (bg.status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
+
+      setFgPerm(fg);
     })();
   }, []);
 
   return (
     <View style={styles.container}>
+      <Text>fg permission</Text>
+      <Text>{fgPerm ? JSON.stringify(fgPerm, null, 2) : null}</Text>
+      <View style={{ height: 15 }} />
+      <Text>bg permission</Text>
+      <Text>{bgPerm ? JSON.stringify(bgPerm, null, 2) : null}</Text>
+      <View style={{ height: 15 }} />
       {errorMsg ? <Text>{errorMsg}</Text> : null}
+
       {locationStarted ? <Text>Location started</Text> : React.null}
 
+      <Button
+        title="Request bg perm"
+        onPress={(_) => {
+          Location.requestBackgroundPermissionsAsync()
+            .then((bg) => {
+              setBgPerm(bg);
+              if (bg.status !== "granted") {
+                setErrorMsg("Permission to access location was denied");
+              }
+            })
+            .catch((err) => {
+              setErrorMsg("requestBackgroundPermissionsAsync error check logs");
+              console.log(err);
+            });
+        }}
+      />
+
+      <View style={{ height: 15 }} />
       <Button
         title="Start location"
         onPress={() => {
